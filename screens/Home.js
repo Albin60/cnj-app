@@ -13,7 +13,6 @@ const Home = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [buttonPressed, setButtonPressed] = useState(false);
 
-  // Function to fetch a joke
   const fetchJoke = async () => {
     setLoading(true);
     setButtonPressed(true);
@@ -25,11 +24,10 @@ const Home = ({ navigation }) => {
       setJoke("Failed to load joke. Try again!");
     } finally {
       setLoading(false);
-      setTimeout(() => setButtonPressed(false), 200); // Reset button press animation
+      setTimeout(() => setButtonPressed(false), 200);
     }
   };
 
-  // Fetch joke on component mount
   useEffect(() => {
     fetchJoke();
   }, []);
@@ -38,13 +36,10 @@ const Home = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>🔥 Chuck Norris Jokes 🔥</Text>
 
-      {/* Chuck Norris Image */}
-      <Image
-        source={{ uri: "https://i.imgur.com/jp3iEZD.jpeg" }}
-        style={styles.image}
-      />
+      {/* Custom Chuck Norris-Like Image */}
+      <Image source={require("../../assets/chuck_norris.png")} style={styles.image} />
 
-      {/* Joke Display */}
+
       <View style={styles.jokeContainer}>
         {loading ? (
           <ActivityIndicator size="large" color="#ff6600" />
@@ -53,7 +48,6 @@ const Home = ({ navigation }) => {
         )}
       </View>
 
-      {/* "Get New Joke" Button with Animation */}
       <TouchableOpacity
         style={[styles.button, buttonPressed && styles.buttonPressed]}
         onPress={fetchJoke}
@@ -61,7 +55,6 @@ const Home = ({ navigation }) => {
         <Text style={styles.buttonText}>😂 Get New Joke</Text>
       </TouchableOpacity>
 
-      {/* Navigation to Categories */}
       <TouchableOpacity
         style={[styles.button, styles.secondaryButton]}
         onPress={() => navigation.navigate("Categories")}
@@ -72,7 +65,6 @@ const Home = ({ navigation }) => {
   );
 };
 
-// 🔹 Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
