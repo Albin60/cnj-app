@@ -7,17 +7,27 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import CategoriesScreen from "./CategoriesScreen"; // Importimi i ekranit të ri
 
-const Home = ({ navigation }) => {
+const Stack = createStackNavigator();
+
+const HomeScreen = ({ navigation, route }) => {
   const [joke, setJoke] = useState("");
   const [loading, setLoading] = useState(true);
   const [buttonPressed, setButtonPressed] = useState(false);
+  const [category, setCategory] = useState(route.params?.category || "");
 
   const fetchJoke = async () => {
     setLoading(true);
     setButtonPressed(true);
     try {
-      const response = await fetch("https://api.chucknorris.io/jokes/random");
+      let url = "https://api.chucknorris.io/jokes/random";
+      if (category) {
+        url += `?category=${category}`;
+      }
+      const response = await fetch(url);
       const data = await response.json();
       setJoke(data.value);
     } catch (error) {
@@ -30,15 +40,13 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     fetchJoke();
-  }, []);
+  }, [category]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🔥 Chuck Norris Jokes 🔥</Text>
 
-      {/* Custom Chuck Norris-Like Image */}
-      <Image source={require("../../assets/chuck_norris.png")} style={styles.image} />
-
+      <Image source={{ uri: "https://i.imgur.com/jp3iEZD.jpeg" }} style={styles.image} />
 
       <View style={styles.jokeContainer}>
         {loading ? (
@@ -48,23 +56,29 @@ const Home = ({ navigation }) => {
         )}
       </View>
 
-      <TouchableOpacity
-        style={[styles.button, buttonPressed && styles.buttonPressed]}
-        onPress={fetchJoke}
-      >
+      <TouchableOpacity style={[styles.button, buttonPressed && styles.buttonPressed]} onPress={fetchJoke}>
         <Text style={styles.buttonText}>😂 Get New Joke</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.button, styles.secondaryButton]}
-        onPress={() => navigation.navigate("Categories")}
-      >
-        <Text style={styles.buttonText}>📂 Joke Categories</Text>
+      <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => navigation.navigate("Categories")}>
+        <Text style={styles.buttonText}>📂 Select Category</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
+const Home = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Categories" component={CategoriesScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+// 🔹 Styles (mbeten të njëjtat)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -105,13 +119,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "80%",
     alignItems: "center",
-    shadowColor: "#ff6600",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-  },
-  buttonPressed: {
-    backgroundColor: "#cc5500",
   },
   secondaryButton: {
     backgroundColor: "#00ADB5",
