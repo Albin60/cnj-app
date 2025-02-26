@@ -7,26 +7,26 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // Importing an icon for the back button
+import { Ionicons } from "@expo/vector-icons"; 
 
 const CategoriesScreen = ({ navigation }) => {
-  // State to store categories
+  
   const [categories, setCategories] = useState([]);
-  // State to manage loading status
+  
   const [loading, setLoading] = useState(true);
 
-  // Fetch categories when the component loads
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // Fetch categories from the API
+       
         const response = await fetch("https://api.chucknorris.io/jokes/categories");
         const data = await response.json();
-        setCategories(data); // Save categories to state
+        setCategories(data); 
       } catch (error) {
         console.error("Failed to load categories", error);
       } finally {
-        setLoading(false); // Stop loading once fetching is done
+        setLoading(false); 
       }
     };
     fetchCategories();
@@ -34,7 +34,7 @@ const CategoriesScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Back button to return to the previous screen */}
+      
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={28} color="white" />
       </TouchableOpacity>
@@ -42,17 +42,16 @@ const CategoriesScreen = ({ navigation }) => {
       <Text style={styles.title}>📂 Select a Category</Text>
 
       {loading ? (
-        // Show a loading spinner while fetching categories
+       
         <ActivityIndicator size="large" color="#ff6600" />
       ) : (
-        // Display categories as a grid
+        
         <FlatList
           data={categories}
-          keyExtractor={(item) => item} // Unique key for each category
-          numColumns={2} // Display categories in two columns
+          keyExtractor={(item) => item} 
+          numColumns={2} 
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
-            // Button to select a category and navigate back to Home
             <TouchableOpacity
               style={styles.categoryButton}
               onPress={() => navigation.navigate("Home", { category: item })}
